@@ -17,4 +17,14 @@ public class EmployeeBehavior {
         Assert.Equal(Contact.CreatePhone("123123123"), employee.Contacts.First());
     }
     
+    [Fact]
+    public void Removes_contact_if_it_exists() {
+        var employee = new Employee("Test", "123456789");
+        employee.AddPhone("123123123");
+        
+        employee.RemoveContact("123123123", ContactType.Phone);
+        
+        Assert.Empty(employee.Contacts);
+    }
+    
 }
