@@ -1,8 +1,7 @@
 using Dapper;
-using DemoFuncionario.Employees.Data;
 using Microsoft.Data.SqlClient;
 
-namespace DemoFuncionario.Employees; 
+namespace DemoFuncionario.Employees.Data; 
 
 public class EmployeeRepository : IRepository<Employee> {
     private readonly SqlConnection _cnn;
