@@ -1,4 +1,6 @@
-namespace DemoFuncionario.Tests;
+using DemoFuncionario.Employees;
+
+namespace DemoFuncionario.Tests.Employees;
 
 public class AddressBehavior {
     [Fact]

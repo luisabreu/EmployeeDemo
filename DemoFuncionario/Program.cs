@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Text;
-using System.Text.Unicode;
 using System.Transactions;
+using DemoFuncionario.Employees;
 using Microsoft.Data.SqlClient;
 
 
@@ -66,7 +66,7 @@ async Task<int> CreateEmployeeAsync() {
     employee.AddEmail("teste@mail.pt");
 
     if( await SaveOrUpdateEmployeeAsync(employee) ) {
-        return employee.EmployeeId;
+        return employee.Id;
     }
 
     return -1;

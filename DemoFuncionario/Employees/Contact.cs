@@ -1,4 +1,8 @@
-﻿public record Contact{
+﻿using DemoFuncionario.Employees.Data;
+
+namespace DemoFuncionario.Employees; 
+
+public record Contact{
     public Contact(string value, ContactType contactType) {
         CheckIfContactIsValid(value, contactType);
         Value = value;

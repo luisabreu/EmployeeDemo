@@ -1,7 +1,10 @@
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
+using DemoFuncionario.Core;
+using DemoFuncionario.Employees.Data;
 
-public class Employee {
+namespace DemoFuncionario.Employees;
+
+public class Employee: Aggregate {
     private readonly EmployeeData _data;
 
     
@@ -34,7 +37,22 @@ public class Employee {
     // used for testing since there are no events
     public IEnumerable<Contact> Contacts => _data.Contacts.Select(c => new Contact(c.Value, c.ContactType)).ToImmutableArray( );
     
-    public int EmployeeId => _data.EmployeeId;
+    public override int Id => _data.EmployeeId;
+
+    public override byte[]? Version => _data.Version; 
+
+    protected override bool Equals(Entity other) {
+        if( other is not Employee otherEmployee ) {
+            return false;
+        }
+        
+        if( other.Id == 0 && Id == 0 ) {
+            return string.Compare(otherEmployee._data.Name, _data.Name)            == 0 &&
+                   string.Compare(otherEmployee._data.TaxNumber, _data.TaxNumber ) == 0;
+
+        }
+        return base.Equals(other);
+    }
 
     public void AddContact(string value, ContactType contactType) => AddContact(new Contact(value, contactType));
 

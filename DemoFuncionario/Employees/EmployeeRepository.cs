@@ -1,10 +1,8 @@
 using Dapper;
+using DemoFuncionario.Employees.Data;
 using Microsoft.Data.SqlClient;
 
-public interface IRepository<T> {
-    Task<bool> SaveAsync(T entity);
-    Task<T?> GetAsync(int entityId);
-}
+namespace DemoFuncionario.Employees; 
 
 public class EmployeeRepository : IRepository<Employee> {
     private readonly SqlConnection _cnn;

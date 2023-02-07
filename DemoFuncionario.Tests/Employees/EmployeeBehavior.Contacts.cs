@@ -1,7 +1,8 @@
-﻿namespace DemoFuncionario.Tests; 
+﻿using DemoFuncionario.Employees;
 
-public class EmployeeBehavior {
+namespace DemoFuncionario.Tests.Employees; 
 
+public partial class EmployeeBehavior {
     [Theory]
     [InlineData("", "123456789")]
     [InlineData("Someone", "")]
@@ -26,5 +27,4 @@ public class EmployeeBehavior {
         
         Assert.Empty(employee.Contacts);
     }
-    
 }
