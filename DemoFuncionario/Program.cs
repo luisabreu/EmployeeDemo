@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Transactions;
 using DemoFuncionario.Employees;
@@ -7,7 +9,17 @@ using DemoFuncionario.Employees.Data;
 using Microsoft.Data.SqlClient;
 
 
+[assembly: InternalsVisibleTo("DemoFuncionario.Tests")]
+
 const string cnnString = "data source=localhost; initial catalog=employeedemo; user id=employee; password=employee";
+
+
+var aux = DoIt(null);
+Console.WriteLine(aux.Length);
+
+
+[return: NotNullIfNotNull(nameof(option))]
+string? DoIt(string? option) => option;
 
 
 var employeeId = await CreateEmployeeAsync( );
