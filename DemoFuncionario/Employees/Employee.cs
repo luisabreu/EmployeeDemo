@@ -24,6 +24,8 @@ public class Employee: Aggregate {
                                      CivilParish = address?.CivilParish,
                                      ZipCode = address?.ZipCode
                                  };
+        
+        AddEvent(new EmployeeCreated(name, taxNumber, address));
 
 
     }
@@ -32,6 +34,8 @@ public class Employee: Aggregate {
         _data.Street = newAddress.Street;
         _data.ZipCode = newAddress.ZipCode;
         _data.CivilParish = newAddress.CivilParish;
+        
+        AddEvent(new AddressUpdated(newAddress));
     }
 
     // used for testing since there are no events
@@ -61,14 +65,20 @@ public class Employee: Aggregate {
             return;
         }
         _data.Contacts.Add(ct);
+        
+        AddEvent(new ContactAdded(ct));
     }
 
     internal EmployeeData GetInternalState() => _data;
 
     public void RemoveContact(string value, ContactType contactType) => RemoveContact(new Contact(value, contactType));
 
-    public void RemoveContact(Contact ct) => _data.Contacts.Remove(ct);
-    
+    public void RemoveContact(Contact ct) {
+        if( _data.Contacts.Remove(ct) ) {
+            AddEvent(new ContactRemoved(ct));
+        }
+    }
+
     private void CheckIfTaxNumberIsValid(string taxNumber) {
         if( string.IsNullOrEmpty(taxNumber) ) {
             throw new ArgumentException(taxNumber);

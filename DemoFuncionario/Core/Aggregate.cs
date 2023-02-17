@@ -7,6 +7,12 @@ public abstract class Aggregate : Entity {
 
     public IEnumerable<DomainEvent> Events => _events.ToImmutableArray( );
     
+    protected void AddEvent(DomainEvent evt){
+        _events.Add(evt);
+    }
+
+    internal protected void ClearEvents() => _events.Clear( );
+    
     public abstract byte[]? Version { get; }
 
     protected override bool Equals(Entity other) {
