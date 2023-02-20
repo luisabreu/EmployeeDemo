@@ -133,6 +133,20 @@ CREATE TABLE [dbo].[Employees](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+
+/****** Object:  Table [dbo].[DomainEvents]    Script Date: 2/17/2023 12:16:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DomainEvents](
+	[DomainEventId] [int] IDENTITY(1,1) NOT NULL,
+	[Event] [nvarchar](max) NOT NULL,
+	[EventType] [nvarchar](200) NOT NULL,
+	[EmployeeId] [int] NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
 USE [master]
 GO
 ALTER DATABASE [EmployeeDemo] SET  READ_WRITE 

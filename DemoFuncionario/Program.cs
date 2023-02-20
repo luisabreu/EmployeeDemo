@@ -6,6 +6,7 @@ using System.Text;
 using System.Transactions;
 using DemoFuncionario.Employees;
 using DemoFuncionario.Employees.Data;
+using DemoFuncionario.Employees.Services;
 using Microsoft.Data.SqlClient;
 
 
@@ -66,7 +67,7 @@ async Task<Employee?> LoadEmployee(int employeeId) {
     await using var cnn = new SqlConnection(cnnString);
     await cnn.OpenAsync( );
 
-    var rep = new EmployeeRepository(cnn);
+    var rep = new EmployeeRepository(cnn, new Serializer());
     var employee = await rep.GetAsync(employeeId);
     return employee;
 }
@@ -90,7 +91,7 @@ async Task<bool> SaveOrUpdateEmployeeAsync(Employee employee) {
     await using var cnn = new SqlConnection(cnnString);
     await cnn.OpenAsync( );
 
-    var rep = new EmployeeRepository(cnn);
+    var rep = new EmployeeRepository(cnn, new Serializer());
     if( await rep.SaveAsync(employee) ) {
         tran.Complete(  );
         return true;

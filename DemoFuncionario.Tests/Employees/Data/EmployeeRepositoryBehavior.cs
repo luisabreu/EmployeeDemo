@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Transactions;
 using Dapper;
+using DemoFuncionario.Core;
 using DemoFuncionario.Employees;
 using DemoFuncionario.Employees.Data;
+using DemoFuncionario.Employees.Services;
 using Microsoft.Data.SqlClient;
 
 namespace DemoFuncionario.Tests.Employees.Data; 
@@ -11,6 +13,9 @@ namespace DemoFuncionario.Tests.Employees.Data;
 public class EmployeeRepositoryBehavior {
 
     private const string _cnnString = "initial catalog=EmployeeDemo; data source=localhost; user id=employee; password=employee";
+
+    private static readonly ISerializer _serializer = new Serializer( ); 
+        
 
     [Fact]
     [Category("db")]
@@ -24,9 +29,10 @@ public class EmployeeRepositoryBehavior {
         using var tran = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await using var cnn = new SqlConnection(_cnnString);
         await cnn.OpenAsync( );
-        
 
-        var rep = new EmployeeRepository(cnn);
+        var generatedEvents = employee.Events.ToArray(  );
+
+        var rep = new EmployeeRepository(cnn, _serializer);
         var saved = await rep.SaveAsync(employee);
         
         Assert.True(saved);
@@ -48,6 +54,15 @@ public class EmployeeRepositoryBehavior {
         Assert.Contains(contacts.ToImmutableArray(  ), c => c is { Value: "123123123", ContactType    : ContactType.Phone });
         Assert.Contains(contacts.ToImmutableArray(  ), c => c is { Value: "teste@mail.pt", ContactType: ContactType.Email });
 
+
+        var evts = (await cnn.QueryAsync<DomainEventRow>("select * from domainevents where employeeId=@id", new { employee.Id })).ToArray(  );
+        Assert.Equal(generatedEvents.Length, evts.Length);
+
+        for( var i = 0; i < generatedEvents.Length; i++ ) {
+            
+            Assert.Equal(evts[i].Event, await _serializer.Serialize(generatedEvents[i]));
+            Assert.Equal(evts[i].EventType, generatedEvents[i].GetType(  ).FullName);
+        }
     }
     
     [Fact]
@@ -82,7 +97,7 @@ public class EmployeeRepositoryBehavior {
         
         
 
-        var rep = new EmployeeRepository(cnn);
+        var rep = new EmployeeRepository(cnn, _serializer);
         var loadedEmployee = (await rep.GetAsync(id))!.GetInternalState();
         
         Assert.Equal("test", loadedEmployee.Name);
@@ -98,3 +113,6 @@ public class EmployeeRepositoryBehavior {
 
     }
 }
+
+// helper for loading events
+public record struct DomainEventRow(string Event, string EventType, int EmployeeId); 
